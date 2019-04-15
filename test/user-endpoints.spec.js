@@ -172,18 +172,21 @@ describe('User Endpoints', function () {
           name: 'test name',
         }
         const expectedList = {
-          name: 'French',
+          name: 'JavaScript',
           total_score: 0,
           words: [
-            { original: 'entraine toi', translation: 'practice' },
-            { original: 'bonjour', translation: 'hello' },
-            { original: 'maison', translation: 'house' },
-            { original: 'développeur', translation: 'developer' },
-            { original: 'traduire', translation: 'translate' },
-            { original: 'incroyable', translation: 'amazing' },
-            { original: 'chien', translation: 'dog' },
-            { original: 'chat', translation: 'cat' },
+            { original: 'hello!', translation: 'string' },
+            { original: 'false', translation: 'boolean' },
+            { original: 'null', translation: 'null' },
+            { original: '{key: value}', translation: 'object' },
+            { original: '2', translation: 'number' },
+            { original: 'undefined', translation: 'undefined' },
+            { original: 'function hi(hello) { return string; }', translation: 'undefined' },
+            { original: '___ (let i = 0; i < input.length; i++)...', translation: 'for' },
+            { original: '_____ (list.head !== null)...', translation: 'while' },
+            { original: '__ (i === 3)...', translation: 'if' },
           ]
+
         }
         return supertest(app)
           .post('/api/user')
