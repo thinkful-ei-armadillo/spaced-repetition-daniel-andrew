@@ -45,7 +45,6 @@ languageRouter.get("/", async (req, res, next) => {
 });
 
 languageRouter.get("/head", async (req, res, next) => {
-  // implement me
   try {
     const word = await LanguageService.getLanguageWords(
       req.app.get("db"),
@@ -60,7 +59,7 @@ languageRouter.get("/head", async (req, res, next) => {
         error: `You don't have any languages`
       });
     }
-    console.log(word)
+    
     res.json({
       nextWord: word[0].original,
       totalScore: language.total_score,
@@ -71,12 +70,22 @@ languageRouter.get("/head", async (req, res, next) => {
     next(error);
   }
 
-  //res.send('implement me!')
 });
 
 languageRouter.post("/guess", async (req, res, next) => {
-  // implement me
-  res.send("implement me!");
+  // guess is read as null or undefined here - cannot destructure it as the request body.
+  // fix this tuesday!
+  console.log(req.body);
+  const { guess } = req.body
+  try {
+    if (!req.body) {
+      res.status(400).send(`Missing 'guess' in request body`)
+    }
+  }
+  catch(error) {
+    next(error);
+  }
+
 });
 
 module.exports = languageRouter;
