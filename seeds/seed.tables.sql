@@ -21,9 +21,9 @@ VALUES
     'Demo123!'
   );
 
-INSERT INTO "language" ("id", "name", "user_id")
+INSERT INTO "language" ("id", "name", "user_id", "total_score")
 VALUES
-  (1, 'JavaScript', 1);
+  (1, 'JavaScript', 1, 0);
 
 INSERT INTO "word" ("id", "language_id", "original", "translation", "next")
 VALUES
