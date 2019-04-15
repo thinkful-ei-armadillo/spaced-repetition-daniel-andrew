@@ -4,6 +4,10 @@ const { requireAuth } = require('../middleware/jwt-auth')
 
 const languageRouter = express.Router()
 
+// req.language.id first comes from a request to the database to pull languages based on the user id and the language id
+// Each user has a language id to identify which language they are learning which is established via a relation between the language id
+// column and the user id column
+
 languageRouter
   .use(requireAuth)
   .use(async (req, res, next) => {
