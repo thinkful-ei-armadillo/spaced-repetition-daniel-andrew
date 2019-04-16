@@ -1,3 +1,4 @@
+'use strict';
 const LanguageService = {
   getUsersLanguage(db, user_id) {
     return db
@@ -7,10 +8,10 @@ const LanguageService = {
         'language.name',
         'language.user_id',
         'language.head',
-        'language.total_score',
+        'language.total_score'
       )
       .where('language.user_id', user_id)
-      .first()
+      .first();
   },
 
   getLanguageWords(db, language_id) {
@@ -24,10 +25,43 @@ const LanguageService = {
         'next',
         'memory_value',
         'correct_count',
-        'incorrect_count',
+        'incorrect_count'
       )
-      .where({ language_id })
+      .where({ language_id });
   },
-}
 
-module.exports = LanguageService
+  // doLinkedList() {
+  //   const words = LanguageService.getLanguageWords(
+  //     req.app.get("db"),
+  //     req.language.id
+  //   );
+    
+  //   const language = LanguageService.getUsersLanguage(
+  //     req.app.get("db"),
+  //     req.user.id
+  //   );
+
+  //   const linkedList = new LinkedList();
+  //   words.map(word => linkedList.insertLast(word));
+  // },
+  
+};
+
+// const doLinkedList = async (req, res, next) => {
+
+//   const words = await LanguageService.getLanguageWords(
+//     req.app.get("db"),
+//     req.language.id
+//   );
+    
+//   const language = await LanguageService.getUsersLanguage(
+//     req.app.get("db"),
+//     req.user.id
+//   );
+
+//   const linkedList = new LinkedList();
+//   words.map(word => linkedList.insertLast(word));
+
+// };
+
+module.exports = LanguageService;

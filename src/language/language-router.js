@@ -1,7 +1,9 @@
+'use strict';
 const express = require("express");
 const LanguageService = require("./language-service");
 const { requireAuth } = require("../middleware/jwt-auth");
 const LinkedList = require('./LinkedList');
+// const doLinkedList = require('./language-service');
 
 const languageRouter = express.Router();
 const bodyParser = express.json();
@@ -51,7 +53,7 @@ languageRouter.get("/", async (req, res, next) => {
 // GET request handler for rendering each learning page at 'api/language/head'
 languageRouter.get("/head", async (req, res, next) => {
   try {
-    const word = await LanguageService.getLanguageWords(
+    const words = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
     );
@@ -59,17 +61,32 @@ languageRouter.get("/head", async (req, res, next) => {
       req.app.get("db"),
       req.user.id
     );
+
+    const linkedList = new LinkedList();
+    words.map(word => linkedList.insertLast(word));
+
     if (!language) {
       return res.status(404).json({
         error: `You don't have any languages`
       });
     }
 
+    let currNode = linkedList.head;
+    // console.log(linkedList);
+    // console.log(currNode);
+
+    // res.json({
+    //   nextWord: words[1].original,
+    //   totalScore: words[0].total_score,
+    //   wordCorrectCount: words[0].correct_count,
+    //   wordIncorrectCount: words[0].incorrect_count
+    // });
+
     res.json({
-      nextWord: word[0].original,
+      nextWord: currNode.value.original,
       totalScore: language.total_score,
-      wordCorrectCount: word[0].correct_count,
-      wordIncorrectCount: word[0].incorrect_count
+      wordCorrectCount: currNode.value.correct_count,
+      wordIncorrectCount: currNode.value.incorrect_count
     });
   } catch (error) {
     next(error);
@@ -79,8 +96,9 @@ languageRouter.get("/head", async (req, res, next) => {
 // POST request handler for user guessing
 languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
-  const { guess } = req.body
-  const newGuess = guess
+  const { guess } = req.body;
+  const newGuess = guess;
+
   try {
     if (!req.body.guess) {
       res.status(400).json({error: `Missing 'guess' in request body`});
@@ -89,7 +107,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     // console.log(req.body)
 
-    const word = await LanguageService.getLanguageWords(
+    const words = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
     );
@@ -100,40 +118,48 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     );
 
     const linkedList = new LinkedList();
-    word.map(word => linkedList.insertLast(word))
-    
-    let isCorrect;
+    words.map(word => linkedList.insertLast(word));
+    // console.log(JSON.stringify(linkedList, null, 2));
 
-    if (newGuess === word[0].translation) {
+    let isCorrect;
+    let currNode = linkedList.head;
+    console.log(currNode.value);
+
+    if (newGuess === currNode.value.translation) {
       isCorrect = true;
-      word[0].correct_count += 1;
-    } else {
+      currNode.value.correct_count += 1;
+      language.total_score += 1;
+      currNode.value.memory_value *= 2;
+
+      // currNode.next = currNode.next ? currNode.next.value.id : null; // need help understanding this!!
+    } 
+    else {
       isCorrect = false;
-      word[0].incorrect_count += 1;
+      currNode.incorrect_count += 1;
+      currNode.memory_value = 1;
     }
 
+    console.log(currNode.value);
+
     let result = {
-      answer: word[0].translation,
+      answer: currNode.value.translation,
       isCorrect: isCorrect,
-      nextWord: word[1].original,
+      nextWord: currNode.next.value.original,
       totalScore: language.total_score,
-      wordCorrectCount: word[0].correct_count,
-      wordIncorrectCount: word[0].incorrect_count
+      wordCorrectCount: currNode.value.correct_count,
+      wordIncorrectCount: currNode.value.incorrect_count
     };
-    
-    // if(newGuess !== linkedList.head.value.translation){
-    //   result.answer = 'Incorrect'
-    // } else {
-    //   result.answer = 'Correct'
-    // }
-    // console.log(result)
-
-
-    res.status(200).json(result);
+  
+    res.status(200).json(result)
   } catch (error) {
     next(error);
   }
 });
+
+// .then(currNode => {
+//   currNode = currNode.next;
+//   language.head = currNode.next;
+// });
 
 // languageRouter.put("/guess", bodyParser, async (req, res, next) => {
 //   const { wordCorrectCount, wordIncorrectCount } = req.body;

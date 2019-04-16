@@ -190,7 +190,7 @@ describe.only('Language Endpoints', function () {
           })
       })
 
-      it(`moves the word 1 space and updates incorrect count`, async () => {
+      it.only(`moves the word 1 space and updates incorrect count`, async () => {
         await supertest(app)
           .post(`/api/language/guess`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
@@ -201,11 +201,11 @@ describe.only('Language Endpoints', function () {
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .send(incorrectPostBody)
           .expect({
-            nextWord: testLanguagesWords[1].original,
+            nextWord: testLanguagesWords[0].original,
             totalScore: 0,
             wordCorrectCount: 0,
             wordIncorrectCount: 1,
-            answer: testLanguagesWords[0].translation,
+            answer: testLanguagesWords[1].translation,
             isCorrect: false
           })
       })
