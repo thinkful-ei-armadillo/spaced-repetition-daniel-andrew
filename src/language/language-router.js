@@ -64,7 +64,7 @@ languageRouter.get("/head", async (req, res, next) => {
 
     res.json({
       nextWord: word[0].original,
-      correctAnswer: word[0].translation,
+      // answer: word[0].translation,
       totalScore: language.total_score,
       wordCorrectCount: word[0].correct_count,
       wordIncorrectCount: word[0].incorrect_count
@@ -84,25 +84,71 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       res.status(400).json({error: `Missing 'guess' in request body`});
       return
     }
-    console.log(req.body)
-    const words = await LanguageService.getLanguageWords(
+
+    // console.log(req.body)
+
+    const word = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
     );
+    
+    const language = await LanguageService.getUsersLanguage(
+      req.app.get("db"),
+      req.user.id
+    );
+
     const linkedList = new LinkedList();
-    words.map(word => linkedList.insertLast(word))
+    word.map(word => linkedList.insertLast(word))
+
     //console.log(JSON.stringify(linkedList, null, 2))
-    console.log('newGuess: ', newGuess)
-    console.log('linkedList: ', linkedList.head.value.translation)
-    let result = {
-      answer: ''
-    };
-    if(newGuess !== linkedList.head.value.translation){
-      result.answer = 'Incorrect'
+    // console.log('newGuess: ', newGuess)
+    // console.log('linkedList: ', linkedList.head.value.translation)
+    
+    let isCorrect;
+
+    if (newGuess === word[0].translation) {
+      isCorrect = true;
     } else {
-      result.answer = 'Correct'
+      isCorrect = false;
     }
-    console.log(result)
+
+    let result = {
+      answer: word[0].translation,
+      isCorrect: isCorrect,
+      nextWord: word[0].original,
+      totalScore: language.total_score,
+      wordCorrectCount: word[0].correct_count,
+      wordIncorrectCount: word[0].incorrect_count
+    };;
+
+    // if (word[0]) {
+    //   result = {
+    //     answer: word[0].translation,
+    //     isCorrect: isCorrect,
+    //     nextWord: word[0].original,
+    //     totalScore: language.total_score,
+    //     wordCorrectCount: word[0].correct_count,
+    //     wordIncorrectCount: word[0].incorrect_count
+    //   };
+    // } else {
+    //   result = {
+    //     answer: word[0].translation,
+    //     isCorrect: isCorrect,
+    //     nextWord: word[word[0].next - 1].original,
+    //     totalScore: language.total_score,
+    //     wordCorrectCount: word[0].correct_count,
+    //     wordIncorrectCount: word[0].incorrect_count
+    //   };
+    // }
+
+    // result.nextWord = word[0].original;
+    
+    // if(newGuess !== linkedList.head.value.translation){
+    //   result.answer = 'Incorrect'
+    // } else {
+    //   result.answer = 'Correct'
+    // }
+    // console.log(result)
     res.status(200).json(result);
   } catch (error) {
     next(error);
