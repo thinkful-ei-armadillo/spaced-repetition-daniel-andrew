@@ -13,12 +13,6 @@ VALUES
     'Administrator',
     -- password = "pass"
     '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG'
-  ),
-  (
-    2,
-    'demo',
-    'DemoUser',
-    'Demo123!'
   );
 
 INSERT INTO "language" ("id", "name", "user_id", "total_score")
