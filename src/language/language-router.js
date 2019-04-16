@@ -84,7 +84,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       res.status(400).json({error: `Missing 'guess' in request body`});
       return
     }
-    console.log(req.body)
+    //console.log(req.body)
     const words = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
@@ -92,8 +92,8 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     const linkedList = new LinkedList();
     words.map(word => linkedList.insertLast(word))
     //console.log(JSON.stringify(linkedList, null, 2))
-    console.log('newGuess: ', newGuess)
-    console.log('linkedList: ', linkedList.head.value.translation)
+    // console.log('newGuess: ', newGuess)
+    // console.log('linkedList: ', linkedList.head.value.translation)
     let result = {
       answer: ''
     };
