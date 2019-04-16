@@ -1,7 +1,7 @@
 const express = require("express");
 const LanguageService = require("./language-service");
 const { requireAuth } = require("../middleware/jwt-auth");
-const LinkedList = require('../LinkedList');
+const LinkedList = require('./LinkedList');
 
 const languageRouter = express.Router();
 const bodyParser = express.json();
@@ -10,6 +10,7 @@ const bodyParser = express.json();
 // Each user has a language id to identify which language they are learning which is established via a relation between the language id
 // column and the user id column
 
+// authorization require handler
 languageRouter.use(requireAuth).use(async (req, res, next) => {
   try {
     const language = await LanguageService.getUsersLanguage(
@@ -29,6 +30,7 @@ languageRouter.use(requireAuth).use(async (req, res, next) => {
   }
 });
 
+// GET request handler for dashboard page, homepage for logged in users
 languageRouter.get("/", async (req, res, next) => {
   try {
     const words = await LanguageService.getLanguageWords(
@@ -46,6 +48,7 @@ languageRouter.get("/", async (req, res, next) => {
   }
 });
 
+// GET request handler for rendering each learning page at 'api/language/head'
 languageRouter.get("/head", async (req, res, next) => {
   try {
     const word = await LanguageService.getLanguageWords(
@@ -64,7 +67,6 @@ languageRouter.get("/head", async (req, res, next) => {
 
     res.json({
       nextWord: word[0].original,
-      // answer: word[0].translation,
       totalScore: language.total_score,
       wordCorrectCount: word[0].correct_count,
       wordIncorrectCount: word[0].incorrect_count
@@ -74,9 +76,9 @@ languageRouter.get("/head", async (req, res, next) => {
   }
 });
 
+// POST request handler for user guessing
 languageRouter.post("/guess", bodyParser, async (req, res, next) => {
-  // guess is read as null or undefined here - cannot destructure it as the request body.
-  // fix this tuesday!
+
   const { guess } = req.body
   const newGuess = guess
   try {
@@ -99,49 +101,25 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     const linkedList = new LinkedList();
     word.map(word => linkedList.insertLast(word))
-
-    //console.log(JSON.stringify(linkedList, null, 2))
-    // console.log('newGuess: ', newGuess)
-    // console.log('linkedList: ', linkedList.head.value.translation)
     
     let isCorrect;
 
     if (newGuess === word[0].translation) {
       isCorrect = true;
+      word[0].correct_count += 1;
     } else {
       isCorrect = false;
+      word[0].incorrect_count += 1;
     }
 
     let result = {
       answer: word[0].translation,
       isCorrect: isCorrect,
-      nextWord: word[0].original,
+      nextWord: word[1].original,
       totalScore: language.total_score,
       wordCorrectCount: word[0].correct_count,
       wordIncorrectCount: word[0].incorrect_count
-    };;
-
-    // if (word[0]) {
-    //   result = {
-    //     answer: word[0].translation,
-    //     isCorrect: isCorrect,
-    //     nextWord: word[0].original,
-    //     totalScore: language.total_score,
-    //     wordCorrectCount: word[0].correct_count,
-    //     wordIncorrectCount: word[0].incorrect_count
-    //   };
-    // } else {
-    //   result = {
-    //     answer: word[0].translation,
-    //     isCorrect: isCorrect,
-    //     nextWord: word[word[0].next - 1].original,
-    //     totalScore: language.total_score,
-    //     wordCorrectCount: word[0].correct_count,
-    //     wordIncorrectCount: word[0].incorrect_count
-    //   };
-    // }
-
-    // result.nextWord = word[0].original;
+    };
     
     // if(newGuess !== linkedList.head.value.translation){
     //   result.answer = 'Incorrect'
@@ -149,10 +127,26 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     //   result.answer = 'Correct'
     // }
     // console.log(result)
+
+
     res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 });
+
+// languageRouter.put("/guess", bodyParser, async (req, res, next) => {
+//   const { wordCorrectCount, wordIncorrectCount } = req.body;
+//   const correct = wordCorrectCount;
+//   const incorrect = wordIncorrectCount;
+
+//   try {
+
+//   }
+//   catch(error) {
+//     throw new Error(error);
+//   }
+//   res.status(200);
+// })
 
 module.exports = languageRouter;

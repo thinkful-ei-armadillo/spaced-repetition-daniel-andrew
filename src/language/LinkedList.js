@@ -1,3 +1,4 @@
+'use strict';
 class _Node {
   constructor(value, next) {
     this.value = value;
@@ -38,7 +39,7 @@ class LinkedList {
 
     while (i !== pos) {
       if (currNode.next === null) {
-        return console.log("Index does not exist");
+        return console.log('Index does not exist');
       }
       previousNode = currNode;
       currNode = currNode.next;
@@ -105,7 +106,7 @@ class LinkedList {
       currNode = currNode.next;
     }
     if (currNode === null) {
-      console.log("Item not found");
+      console.log('Item not found');
       return;
     }
     previousNode.next = currNode.next;
