@@ -30,38 +30,21 @@ const LanguageService = {
       .where({ language_id });
   },
 
-  // doLinkedList() {
-  //   const words = LanguageService.getLanguageWords(
-  //     req.app.get("db"),
-  //     req.language.id
-  //   );
-    
-  //   const language = LanguageService.getUsersLanguage(
-  //     req.app.get("db"),
-  //     req.user.id
-  //   );
-
-  //   const linkedList = new LinkedList();
-  //   words.map(word => linkedList.insertLast(word));
-  // },
+  // update appropriate fields in word table once user responds with an answer
+  postUserWords(db, id, wordObj) {
+    console.log(wordObj, 'id is: ' + id);
+    return db('word')
+      .update(wordObj)
+      .where('id', id);
+  },
+  // update appropriate fields in language table once user responds with an answer, pointing to the new head
+  postUserLanguage(db, id, langObj) {
+    console.log(langObj, 'langid is: ' + id);
+    return db('language')
+      .update(langObj)
+      .where('id', id);
+  },
   
 };
-
-// const doLinkedList = async (req, res, next) => {
-
-//   const words = await LanguageService.getLanguageWords(
-//     req.app.get("db"),
-//     req.language.id
-//   );
-    
-//   const language = await LanguageService.getUsersLanguage(
-//     req.app.get("db"),
-//     req.user.id
-//   );
-
-//   const linkedList = new LinkedList();
-//   words.map(word => linkedList.insertLast(word));
-
-// };
 
 module.exports = LanguageService;

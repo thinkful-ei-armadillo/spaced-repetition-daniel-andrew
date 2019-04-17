@@ -72,6 +72,7 @@ languageRouter.get("/head", async (req, res, next) => {
     }
 
     let currNode = linkedList.head;
+
     // console.log(linkedList);
     // console.log(currNode);
 
@@ -125,32 +126,75 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     let currNode = linkedList.head;
     console.log(currNode.value);
 
+    let answerPrev = currNode.value.translation;
+
     if (newGuess === currNode.value.translation) {
       isCorrect = true;
       currNode.value.correct_count += 1;
       language.total_score += 1;
       currNode.value.memory_value *= 2;
-
+      linkedList.head = currNode.next;
       // currNode.next = currNode.next ? currNode.next.value.id : null; // need help understanding this!!
+      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
+      // linkedList.remove(currNode)
     } 
     else {
       isCorrect = false;
       currNode.incorrect_count += 1;
       currNode.memory_value = 1;
+      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
+      // linkedList.remove(currNode)
     }
 
     console.log(currNode.value);
 
+    // currNode = currNode.next;
+
+    // response to client
+
     let result = {
-      answer: currNode.value.translation,
+      answer: answerPrev,
       isCorrect: isCorrect,
-      nextWord: currNode.next.value.original,
+      nextWord: currNode.value.original,
       totalScore: language.total_score,
       wordCorrectCount: currNode.value.correct_count,
       wordIncorrectCount: currNode.value.incorrect_count
     };
   
     res.status(200).json(result)
+
+    console.log('hello');
+
+    // post updated values to database
+
+    // write a for loop that appends a certain number of '.next' to the current node's status depending on its memory value
+    // currNode'.next.next' = currNode
+
+
+    const wordObj = {
+      memory_value: currNode.value.memory_value,
+      correct_count: currNode.value.correct_count,
+      incorrect_count: currNode.value.incorrect_count,
+      next: currNode.next.value.id
+    }
+
+    await LanguageService.postUserWords(
+      req.app.get('db'), 
+      currNode.value.id, 
+      wordObj
+      )
+
+    const langObj = {
+      head: currNode.next.value.id,
+      total_score: language.total_score,
+    }
+
+    await LanguageService.postUserLanguage(
+      req.app.get('db'), 
+      currNode.value.language_id, 
+      langObj
+      )
+
   } catch (error) {
     next(error);
   }
