@@ -9,7 +9,7 @@ const bodyParser = express.json();
 // req.language.id first comes from a request to the database to pull languages based on the user id and the language id
 // Each user has a language id to identify which language they are learning which is established via a relation between the language id
 // column and the user id column
-
+console.log('Testing for persisting variables')
 languageRouter.use(requireAuth).use(async (req, res, next) => {
   try {
     const language = await LanguageService.getUsersLanguage(
@@ -84,16 +84,24 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       res.status(400).json({error: `Missing 'guess' in request body`});
       return
     }
-    //console.log(req.body)
+
     const words = await LanguageService.getLanguageWords(
       req.app.get("db"),
       req.language.id
     );
+    console.log(words)
     const linkedList = new LinkedList();
+
+    //find head in words array based on language table
+    //sort words array by .next value or by memory value
+    //insertLast on each word in the array
+
     words.map(word => linkedList.insertLast(word))
-    //console.log(JSON.stringify(linkedList, null, 2))
-    // console.log('newGuess: ', newGuess)
-    // console.log('linkedList: ', linkedList.head.value.translation)
+
+    //if correct, then double M 
+    //if incorrect, reset M to 1 
+    //then move current word M number of places in the list
+
     let result = {
       answer: ''
     };

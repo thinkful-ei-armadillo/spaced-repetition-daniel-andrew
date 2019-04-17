@@ -1,0 +1,6 @@
+Get all words in the db
+
+Create a new instance of a linked list populated by the words
+let words = [a, b, c, d, e]
+
+head =>[a] -> [b] -> [c] -> [d] -> [e]
