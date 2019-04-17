@@ -124,31 +124,48 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     let isCorrect;
     let currNode = linkedList.head;
-    console.log(currNode.value);
+    // console.log(currNode.value);
+
+    console.log(JSON.stringify(linkedList, null, 2));
 
     let answerPrev = currNode.value.translation;
 
-    if (newGuess === currNode.value.translation) {
+    if (newGuess === answerPrev) {
       isCorrect = true;
       currNode.value.correct_count += 1;
       language.total_score += 1;
       currNode.value.memory_value *= 2;
-      linkedList.head = currNode.next;
       // currNode.next = currNode.next ? currNode.next.value.id : null; // need help understanding this!!
-      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
-      // linkedList.remove(currNode)
+      linkedList.head = currNode.next;
     } 
     else {
       isCorrect = false;
       currNode.incorrect_count += 1;
       currNode.memory_value = 1;
-      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
-      // linkedList.remove(currNode)
     }
 
-    console.log(currNode.value);
+    //implementing move currNode according to memory value stemming from user correct/incorrect response
 
-    // currNode = currNode.next;
+    // function Node(data, next = null) {
+    //   this.data = data, this.next = next;
+    // }
+    // function Context(source, dest) {
+    //   this.source = source, this.dest = dest;
+    // }
+    // function moveNode(source, dest) {
+    //   if(!source) throw "Error"
+    //   return new Context(source.next, new Node(source.data, dest));
+    // }
+
+    // moveNode(currNode, currNode.value.memory_value + 1);
+    // linkedList.remove(currNode);
+
+      // move current node back in the list depending on how user responds
+      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
+      // linkedList.remove(currNode)
+
+    // console.log(currNode.value);
+    console.log(JSON.stringify(linkedList, null, 2));
 
     // response to client
 
