@@ -1,6 +1,99 @@
-Get all words in the db
+Get all words in the db based on the language id
 
-Create a new instance of a linked list populated by the words
-let words = [a, b, c, d, e]
+Create a new instance of a linked list populated by the words array within the /guess endpoint (that is, stored locally)
 
-head =>[a] -> [b] -> [c] -> [d] -> [e]
+Display the head of the linked list on the client via /head endpoint
+
+When a user submits a guess, update the correct_count and/ incorrect_count at that node in the linked list
+Update the memory_value accordingly
+Move the node to a new spot in the linked list by changing its next value AND its surrounding nodes' next values
+
+Update the db based on the new values from each node that was changed
+Move the head in the language table to the new head of the linked list
+
+When a user clicks Try another word!, display the new head in the db and repeat
+
+[ { id: 1,
+    language_id: 1,
+    original: 'hello!',
+    translation: 'string',
+    next: 2,
+    memory_value: 2,
+    correct_count: 1,
+    incorrect_count: 0 },
+
+  { id: 2,
+    language_id: 1,
+    original: 'false',
+    translation: 'boolean',
+    next: 3,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+
+  { id: 3,
+    language_id: 1,
+    original: 'null',
+    translation: 'null',
+    next: 4,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+
+  { id: 4,
+    language_id: 1,
+    original: '{key: value}',
+    translation: 'object',
+    next: 5,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+
+  { id: 5,
+    language_id: 1,
+    original: '2',
+    translation: 'number',
+    next: 6,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+  { id: 6,
+    language_id: 1,
+    original: 'undefined',
+    translation: 'undefined',
+    next: 7,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+  { id: 7,
+    language_id: 1,
+    original: 'function hi(hello) { return string; }',
+    translation: 'undefined',
+    next: 8,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+  { id: 8,
+    language_id: 1,
+    original: '___ (let i = 0; i < input.length; i++)...',
+    translation: 'for',
+    next: 9,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+  { id: 9,
+    language_id: 1,
+    original: '_____ (list.head !== null)...',
+    translation: 'while',
+    next: 10,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 },
+  { id: 10,
+    language_id: 1,
+    original: '__ (i === 3)...',
+    translation: 'if',
+    next: null,
+    memory_value: 1,
+    correct_count: 0,
+    incorrect_count: 0 } ]
