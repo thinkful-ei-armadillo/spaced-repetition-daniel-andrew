@@ -31,6 +31,7 @@ const LanguageService = {
   },
 
   // update appropriate fields in word table once user responds with an answer
+  // also need to update new 'next' pointer based on memory value!!!!
   postUserWords(db, id, wordObj) {
     console.log(wordObj, 'id is: ' + id);
     return db('word')

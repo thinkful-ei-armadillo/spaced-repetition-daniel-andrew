@@ -120,13 +120,9 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     const linkedList = new LinkedList();
     words.map(word => linkedList.insertLast(word));
-    // console.log(JSON.stringify(linkedList, null, 2));
 
     let isCorrect;
     let currNode = linkedList.head;
-    // console.log(currNode.value);
-
-    console.log(JSON.stringify(linkedList, null, 2));
 
     let answerPrev = currNode.value.translation;
 
@@ -139,10 +135,40 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       linkedList.head = currNode.next;
     } 
     else {
+      console.log('wrong!')
       isCorrect = false;
       currNode.incorrect_count += 1;
+      
       currNode.memory_value = 1;
     }
+    // response to client
+
+    let result = {
+      answer: answerPrev,
+      isCorrect: isCorrect,
+      nextWord: currNode.value.original,
+      totalScore: language.total_score,
+      wordCorrectCount: currNode.value.correct_count,
+      wordIncorrectCount: currNode.value.incorrect_count
+    };
+  
+    res.status(200).json(result)
+
+    console.log('hello');
+
+    // shift node to correct position by M spaces
+
+    let newNext = currNode.next.value.id;
+
+
+    // console.log(JSON.stringify(linkedList, null, 2));
+
+    console.log(currNode.value.memory_value);
+
+    linkedList.insertAt(currNode, currNode.value.memory_value + 1);
+    // linkedList.remove(currNode);
+
+    // console.log(linkedList);
 
     //implementing move currNode according to memory value stemming from user correct/incorrect response
 
@@ -161,38 +187,38 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     // linkedList.remove(currNode);
 
       // move current node back in the list depending on how user responds
-      // linkedList.insertAt(currNode, currNode.value.memory_value + 1)
-      // linkedList.remove(currNode)
 
-    // console.log(currNode.value);
-    console.log(JSON.stringify(linkedList, null, 2));
+    // console.log(newNext);
+    // if (currNode.value.memory_value === 1) {
+    //   if (currNode.next !== null) {
+    //     newNext = (currNode.next.value.id + 1);
+    //   }
+    //   if (currNode.next === null) {
+    //     newNext = (currNode.next.value.id + 1) - words.length;
+    //     // linkedList.find() // wanted to find 'next' node and update pointer
+    //   }
+    // }
 
-    // response to client
-
-    let result = {
-      answer: answerPrev,
-      isCorrect: isCorrect,
-      nextWord: currNode.value.original,
-      totalScore: language.total_score,
-      wordCorrectCount: currNode.value.correct_count,
-      wordIncorrectCount: currNode.value.incorrect_count
-    };
-  
-    res.status(200).json(result)
-
-    console.log('hello');
+    // if (currNode.value.memory_value !== 1) {
+    //   if (currNode.next !== null) {
+    //     newNext = (currNode.next.value.id + currNode.value.memory_value);
+    //   }
+    //   if (currNode.next === null) {
+    //     newNext = (currNode.next.value.id + currNode.value.memory_value) - words.length;
+    //   }
+    //   if (newNext > words.length) {
+    //     newNext -= words.length;
+    //   }
+    // }
+    // console.log(newNext);
 
     // post updated values to database
-
-    // write a for loop that appends a certain number of '.next' to the current node's status depending on its memory value
-    // currNode'.next.next' = currNode
-
 
     const wordObj = {
       memory_value: currNode.value.memory_value,
       correct_count: currNode.value.correct_count,
       incorrect_count: currNode.value.incorrect_count,
-      next: currNode.next.value.id
+      next: newNext
     }
 
     await LanguageService.postUserWords(
