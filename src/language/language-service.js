@@ -1,5 +1,4 @@
 'use strict';
-const { LinkedList } = require('./LinkedList.js')
 const { NewLinkedList } = require('./NewLinkedList');
 const LanguageService = {
   getUsersLanguage(db, user_id) {
@@ -85,36 +84,6 @@ const LanguageService = {
       ll.insertTail(word)
     }
     return ll
-  },
-  generateLinkedList(words, head){
-    // find the head of the linked list in the words array via the language.head
-    const headObj = words.find(word => word.id === head);
-    const headIndex = words.indexOf(headObj);
-    const headNode = words.splice(headIndex,1);
-    const list = new LinkedList();
-
-    // insert the head into the linked list
-    list.insertLast(headNode[0]);
-
-    // find the next node for the linked list in the words array
-    let nextId = headNode[0].next;
-    let currentWord = words.find(word => word.id === nextId);
-    list.insertLast(currentWord);
-
-    nextId = currentWord.next;
-    currentWord = words.find(word => word.id === nextId);
-
-    // iterate through the words array and insert each item into the linked list 
-    while(currentWord !== null){
-      list.insertLast(currentWord);
-      nextId = currentWord.next;
-      if(nextId === null){
-        currentWord = null;
-      } else {
-        currentWord = words.find(word => word.id === nextId);
-      }
-    }
-    return list;
   },
 };
 

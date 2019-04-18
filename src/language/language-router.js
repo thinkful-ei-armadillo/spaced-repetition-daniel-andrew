@@ -2,16 +2,9 @@
 const express = require("express");
 const LanguageService = require("./language-service");
 const { requireAuth } = require("../middleware/jwt-auth");
-const { LinkedList, _Node } = require("./LinkedList");
-const { NewLinkedList, NewNode } = require('./NewLinkedList');
-// const doLinkedList = require('./language-service');
 
 const languageRouter = express.Router();
 const bodyParser = express.json();
-
-// req.language.id first comes from a request to the database to pull languages based on the user id and the language id
-// Each user has a language id to identify which language they are learning which is established via a relation between the language id
-// column and the user id column
 
 // authorization require handler
 languageRouter.use(requireAuth).use(async (req, res, next) => {
@@ -89,12 +82,8 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       req.app.get("db"),
       req.user.id
     );
-    //need a function that creates the linked list one at a time based on first the head, then each .next after
-    // const linkedList = new LinkedList();
-    // words.map(word => linkedList.insertLast(word));
 
     const list = LanguageService.generateLinkedListTwo(words, language.head, language.total_score)
-    // console.log(JSON.stringify(list, null, 2))
 
     let isCorrect;
     let currNode = list.head;
@@ -106,33 +95,11 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       currNode.value.memory_value = parseInt(currNode.value.memory_value * 2, 10);
       currNode.value.correct_count = parseInt(currNode.value.correct_count + 1, 10);
       language.total_score = language.total_score + 1;
-      // currNode.next = currNode.next ? currNode.next.value.id : null; // need help understanding this!!
-      //linkedList.head = currNode.next;
     } else {
       isCorrect = false;
       currNode.value.incorrect_count = currNode.value.incorrect_count + 1;
       currNode.value.memory_value = 1;
     }
-    // response to client
-
-    // let result = {
-    //   answer: answerPrev,
-    //   isCorrect: isCorrect,
-    //   nextWord: currNode.value.original,
-    //   totalScore: language.total_score,
-    //   wordCorrectCount: currNode.value.correct_count,
-    //   wordIncorrectCount: currNode.value.incorrect_count
-    // };
-
-    // persist language table in db
-    // persist word table in db 
-
-
-    //console.log(JSON.stringify(list, null, 2))
-
-    
-
-    //console.log(JSON.stringify(list, null, 2))
 
     list.shiftHeadBy(list.head.value.memory_value)
 
