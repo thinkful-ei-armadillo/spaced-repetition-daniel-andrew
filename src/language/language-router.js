@@ -3,6 +3,7 @@ const express = require("express");
 const LanguageService = require("./language-service");
 const { requireAuth } = require("../middleware/jwt-auth");
 const { LinkedList, _Node } = require("./LinkedList");
+const { NewLinkedList, NewNode } = require('./NewLinkedList');
 // const doLinkedList = require('./language-service');
 
 const languageRouter = express.Router();
@@ -92,7 +93,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     // const linkedList = new LinkedList();
     // words.map(word => linkedList.insertLast(word));
 
-    const list = LanguageService.generateLinkedList(words, language.head)
+    const list = LanguageService.generateLinkedListTwo(words, language.head, language.total_score)
     // console.log(JSON.stringify(list, null, 2))
 
     let isCorrect;
@@ -102,88 +103,97 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     if (newGuess === answerPrev) {
       isCorrect = true;
-      currNode.value.correct_count += 1;
-      language.total_score += 1;
-      currNode.value.memory_value *= 2;
+      currNode.value.memory_value = parseInt(currNode.value.memory_value * 2, 10);
+      currNode.value.correct_count = parseInt(currNode.value.correct_count + 1, 10);
+      language.total_score = language.total_score + 1;
       // currNode.next = currNode.next ? currNode.next.value.id : null; // need help understanding this!!
       //linkedList.head = currNode.next;
     } else {
       isCorrect = false;
-      currNode.value.incorrect_count += 1;
+      currNode.value.incorrect_count = currNode.value.incorrect_count + 1;
       currNode.value.memory_value = 1;
     }
     // response to client
 
-    let result = {
-      answer: answerPrev,
-      isCorrect: isCorrect,
-      nextWord: currNode.value.original,
-      totalScore: language.total_score,
-      wordCorrectCount: currNode.value.correct_count,
-      wordIncorrectCount: currNode.value.incorrect_count
-    };
+    // let result = {
+    //   answer: answerPrev,
+    //   isCorrect: isCorrect,
+    //   nextWord: currNode.value.original,
+    //   totalScore: language.total_score,
+    //   wordCorrectCount: currNode.value.correct_count,
+    //   wordIncorrectCount: currNode.value.incorrect_count
+    // };
 
-    res.status(200).json(result);
+    // persist language table in db
+    // persist word table in db 
 
-    // shift node to correct position by M spaces
-
-    let curr = list.head;
-    let countDown = currNode.value.memory_value;
-    while (countDown > 0 && curr.next !== null) {
-      curr = curr.next;
-      countDown--;
-    }
-    const temp = new _Node(list.head.value);
-
-    if (curr.next === null) {
-      temp.next = curr.next;
-      curr.next = temp;
-      list.head = list.head.next;
-      curr.value.next = temp.value.id;
-      temp.value.next = null;
-    } else {
-      temp.next = curr.next;
-      curr.next = temp;
-      list.head = list.head.next;
-      curr.value.next = temp.value.id;
-      temp.value.next = temp.next.value.id;
-    }
 
     //console.log(JSON.stringify(list, null, 2))
 
-    // convert list into an array
-    let newArray = [];
-    let newCurrNode = list.head;
-    while (newCurrNode.next !== null) {
-      newArray.push(newCurrNode.value);
-      newCurrNode = newCurrNode.next;
-    }
+    
 
-    for (let i = 0; i < newArray.length; i++) {
-      const wordObj = {
-        memory_value: newArray[i].memory_value,
-        correct_count: newArray[i].correct_count,
-        incorrect_count: newArray[i].incorrect_count,
-        next: newArray[i].next
-      };
-      await LanguageService.postUserWords(
-        req.app.get("db"),
-        newArray[i].id,
-        wordObj
-      );
-    }
+    //console.log(JSON.stringify(list, null, 2))
+
+    list.shiftHeadBy(list.head.value.memory_value)
 
     const langObj = {
-      head: newArray[0].id,
+      head: list.head.value.id,
       total_score: language.total_score
     };
-    console.log(newArray)
 
-    await LanguageService.postUserLanguage(
+    await Promise.all([LanguageService.postUserLanguage(
       req.app.get("db"),
       currNode.value.language_id,
       langObj
-    );
+    ), ...LanguageService.postUserWords(
+      req.app.get('db'),
+      list
+    )])
+
+    res.json({
+      nextWord: list.head.value.original,
+      wordCorrectCount: list.head.value.correct_count,
+      wordIncorrectCount: list.head.value.incorrect_count,
+      totalScore: language.total_score,
+      answer: answerPrev,
+      isCorrect: isCorrect
+    })
+    
+
+    //res.status(200).json(result);
+
+    // shift node to correct position by M spaces
+
+    // let curr = list.head;
+    // let countDown = currNode.value.memory_value;
+    // while (countDown > 0 && curr.next !== null) {
+    //   curr = curr.next;
+    //   countDown--;
+    // }
+    // const temp = new _Node(list.head.value);
+
+    // if (curr.next === null) {
+    //   temp.next = curr.next;
+    //   curr.next = temp;
+    //   list.head = list.head.next;
+    //   curr.value.next = temp.value.id;
+    //   temp.value.next = null;
+    // } else {
+    //   temp.next = curr.next;
+    //   curr.next = temp;
+    //   list.head = list.head.next;
+    //   curr.value.next = temp.value.id;
+    //   temp.value.next = temp.next.value.id;
+    // }
+
+    //console.log(JSON.stringify(list, null, 2))
+
+
+
+
+   // console.log(newArray)
+
+
   } catch (error) {
     next(error);
   }
