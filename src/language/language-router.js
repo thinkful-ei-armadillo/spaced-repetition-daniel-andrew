@@ -2,8 +2,7 @@
 const express = require("express");
 const LanguageService = require("./language-service");
 const { requireAuth } = require("../middleware/jwt-auth");
-const  {LinkedList, _Node}  = require('./LinkedList');
-// const doLinkedList = require('./language-service');
+const  { LinkedList, Node }  = require('./LinkedList');
 
 const languageRouter = express.Router();
 const bodyParser = express.json();
@@ -62,8 +61,8 @@ languageRouter.get("/head", async (req, res, next) => {
       req.user.id
     );
 
-    const linkedList = new LinkedList();
-    words.map(word => linkedList.insertLast(word));
+    const linkedList = new LinkedList(language.id, 'JavaScript', language.total_score);
+    words.map(word => linkedList.insertTail(word));
 
     if (!language) {
       return res.status(404).json({
@@ -72,16 +71,6 @@ languageRouter.get("/head", async (req, res, next) => {
     }
 
     let currNode = linkedList.head;
-
-    // console.log(linkedList);
-    // console.log(currNode);
-
-    // res.json({
-    //   nextWord: words[1].original,
-    //   totalScore: words[0].total_score,
-    //   wordCorrectCount: words[0].correct_count,
-    //   wordIncorrectCount: words[0].incorrect_count
-    // });
 
     res.json({
       nextWord: currNode.value.original,
@@ -139,7 +128,8 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       currNode.value.incorrect_count += 1;
       currNode.value.memory_value = 1;
     }
-    // response to client
+
+    // response body to client
 
     let result = {
       answer: answerPrev,
@@ -152,10 +142,10 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
   
     res.status(200).json(result)
 
+
     // shift node to correct position by M spaces
 
-    let newNext = currNode.next.value.id;
-
+    // let newNext = currNode.next.value.id;
 
     // console.log(JSON.stringify(linkedList, null, 2));
 
@@ -166,51 +156,9 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
 
     // console.log(linkedList);
 
-    //implementing move currNode according to memory value stemming from user correct/incorrect response
+    // move current node back in the list depending on how user responds
 
-    // function Node(data, next = null) {
-    //   this.data = data, this.next = next;
-    // }
-    // function Context(source, dest) {
-    //   this.source = source, this.dest = dest;
-    // }
-    // function moveNode(source, dest) {
-    //   if(!source) throw "Error"
-    //   return new Context(source.next, new Node(source.data, dest));
-    // }
-
-    // moveNode(currNode, currNode.value.memory_value + 1);
-    // linkedList.remove(currNode);
-
-      // move current node back in the list depending on how user responds
-
-    // console.log(newNext);
-    // if (currNode.value.memory_value === 1) {
-    //   if (currNode.next !== null) {
-    //     newNext = (currNode.next.value.id + 1);
-    //   }
-    //   if (currNode.next === null) {
-    //     newNext = (currNode.next.value.id + 1) - words.length;
-    //     // linkedList.find() // wanted to find 'next' node and update pointer
-    //   }
-    // }
-
-    // if (currNode.value.memory_value !== 1) {
-    //   if (currNode.next !== null) {
-    //     newNext = (currNode.next.value.id + currNode.value.memory_value);
-    //   }
-    //   if (currNode.next === null) {
-    //     newNext = (currNode.next.value.id + currNode.value.memory_value) - words.length;
-    //   }
-    //   if (newNext > words.length) {
-    //     newNext -= words.length;
-    //   }
-    // }
-    // console.log(newNext);
-
-    // post updated values to database
     console.log(JSON.stringify(linkedList, null, 2))
-    // linkedList.insertAt(currNode, currNode.value.memory_value)
 
     let curr = linkedList.head
     let countDown = currNode.value.memory_value
@@ -218,7 +166,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       curr = curr.next
       countDown--;
     }
-    const temp = new _Node(linkedList.head.value)
+    const temp = new Node(linkedList.head.value)
 
     if(curr.next === null){
       temp.next = curr.next
@@ -234,7 +182,12 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       temp.value.next = temp.next.value.id
     }
 
-    //console.log(JSON.stringify(linkedList, null, 2))
+    console.log(JSON.stringify(linkedList, null, 2))
+
+    // post updated values to database
+
+
+    // linkedList.shiftHeadBy(currNode, currNode.value.memory_value)
 
     // convert linkedList into an array
     let newArray = []
@@ -279,7 +232,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       head: newArray[0].id,
       total_score: language.total_score,
     }
-    console.log('langObj', langObj)
+    // console.log('langObj', langObj)
 
    
   
