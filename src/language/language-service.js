@@ -44,7 +44,7 @@ const LanguageService = {
       .update(langObj)
       .where('id', id);
   },
-  getNextWord(db, language_id){
+  getWordByLanguageHead(db, language_id){
     return db
       .from('word')
       .join('language', 'word.id','=','language.head')
@@ -56,7 +56,7 @@ const LanguageService = {
       )
       .where({language_id});
   },
-  createLinkedList(words, head){
+  generateLinkedList(words, head){
     const headObj = words.find(word => word.id === head);
     const headIndex = words.indexOf(headObj);
     const headNode = words.splice(headIndex,1);

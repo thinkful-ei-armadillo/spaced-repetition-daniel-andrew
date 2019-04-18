@@ -53,7 +53,7 @@ languageRouter.get("/", async (req, res, next) => {
 // GET request handler for rendering each learning page at 'api/language/head'
 languageRouter.get("/head", async (req, res, next) => {
   try {
-    const [nextWord] = await LanguageService.getNextWord(
+    const [nextWord] = await LanguageService.getWordByLanguageHead(
       req.app.get("db"),
       req.language.id
     );
@@ -92,7 +92,7 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
     // const linkedList = new LinkedList();
     // words.map(word => linkedList.insertLast(word));
 
-    const list = LanguageService.createLinkedList(words, language.head)
+    const list = LanguageService.generateLinkedList(words, language.head)
     // console.log(JSON.stringify(list, null, 2))
 
     let isCorrect;
@@ -178,7 +178,6 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       total_score: language.total_score
     };
     console.log(newArray)
-    console.log("langObj", langObj);
 
     await LanguageService.postUserLanguage(
       req.app.get("db"),
