@@ -125,41 +125,6 @@ languageRouter.post("/guess", bodyParser, async (req, res, next) => {
       answer: answerPrev,
       isCorrect: isCorrect
     })
-    
-
-    //res.status(200).json(result);
-
-    // shift node to correct position by M spaces
-
-    // let curr = list.head;
-    // let countDown = currNode.value.memory_value;
-    // while (countDown > 0 && curr.next !== null) {
-    //   curr = curr.next;
-    //   countDown--;
-    // }
-    // const temp = new _Node(list.head.value);
-
-    // if (curr.next === null) {
-    //   temp.next = curr.next;
-    //   curr.next = temp;
-    //   list.head = list.head.next;
-    //   curr.value.next = temp.value.id;
-    //   temp.value.next = null;
-    // } else {
-    //   temp.next = curr.next;
-    //   curr.next = temp;
-    //   list.head = list.head.next;
-    //   curr.value.next = temp.value.id;
-    //   temp.value.next = temp.next.value.id;
-    // }
-
-    //console.log(JSON.stringify(list, null, 2))
-
-
-
-
-   // console.log(newArray)
-
 
   } catch (error) {
     next(error);
