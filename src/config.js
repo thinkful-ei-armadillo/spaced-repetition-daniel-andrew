@@ -6,5 +6,5 @@ module.exports = {
   DB_URL: process.env.DATABASE_URL || 'postgresql://danielors@localhost/spaced-repetition',
   JWT_SECRET: process.env.JWT_SECRET || 'change-this-secret',
   JWT_EXPIRY: process.env.JWT_EXPIRY || '3h',
-  CLIENT_ORIGIN: 'http://localhost:3000' // process.env.CLIENT_ORIGIN || 
+  CLIENT_ORIGIN: 'https://andrew-daniel-spaced-repetition.now.sh' // process.env.CLIENT_ORIGIN || 
 }
