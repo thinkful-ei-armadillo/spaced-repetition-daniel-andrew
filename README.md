@@ -8,7 +8,7 @@ The essential idea behind the build of this API is the implementation of a Linke
 
 Essentially, this concept requires each item in an item list to be shifted ahead to different positions in the list. This action occurs on each user guess. The performance advantages of a linked list (particularly when compared to an array)allows the learn.js API to rearrange each user's list of questions in the proper order without sacrificing performance, even at scale.
 
-### Technology used
+### Server Tech Stack
 
 * Node.js
 * Express
