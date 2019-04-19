@@ -42,7 +42,7 @@ const LanguageService = {
       newArray.push(newCurrNode.value);
       newCurrNode = newCurrNode.next;
     }
-    console.log(newArray)
+
     return newArray.map((item, index) => {
       const wordObj = {
         memory_value: item.memory_value,
