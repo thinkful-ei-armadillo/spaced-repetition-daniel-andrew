@@ -1,10 +1,8 @@
 module.exports = {
   PORT: process.env.PORT || 8000,
   NODE_ENV: process.env.NODE_ENV || 'development',
-  // DB_URL: process.env.DB_URL
-  //   || 'postgresql://danielors@localhost/spaced-repetition',
   DB_URL: process.env.DATABASE_URL || 'postgresql://danielors@localhost/spaced-repetition',
   JWT_SECRET: process.env.JWT_SECRET || 'change-this-secret',
   JWT_EXPIRY: process.env.JWT_EXPIRY || '3h',
-  CLIENT_ORIGIN: 'https://andrew-daniel-spaced-repetition.now.sh' // process.env.CLIENT_ORIGIN || 
+  CLIENT_ORIGIN: 'https://andrew-daniel-spaced-repetition.now.sh'
 }
