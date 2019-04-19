@@ -1,51 +1,28 @@
-# Spaced repetition API!
+# learn.js API
 
-## Local dev setup
+## Summary
 
-If using user `dunder-mifflin`:
+The learn.js app utilizes the idea of spaced repetition to help users better learn basic JavaScript fundamentals like data types and commonly used syntaxes. The learn.js API was built using Node.js and Express with a database built using PostgreSQL. The essential idea behind the build of this API is the implementation of a linked list data structure within the server in order to execute the spaced repetition learning method. A user answers one question at a time, and depending on whether the answer is wrong or right, that question moves down the question list a certain number of spaces. Essentially, the app requires items in an item list to be shifted around to different positions in the list. This happens multiple times for each user. By capitalizing on the advantages of a linked list, which are its ease of insertion and deletion when compared to an array, the learn.js API is able to rearrange each user's list of questions in the proper order without sacrificing performance, even at scale.
 
-```bash
-mv example.env .env
-createdb -U dunder-mifflin spaced-repetition
-createdb -U dunder-mifflin spaced-repetition-test
-```
+## Technology used
 
-If your `dunder-mifflin` user has a password be sure to set it in `.env` for all appropriate fields. Or if using a different user, update appropriately.
+Node.js, Express, PostgreSQL, bcrypt, JWT, Mocha, Chai, Supertest
 
-```bash
-npm install
-npm run migrate
-env MIGRATION_DB_NAME=spaced-repetition-test npm run migrate
-```
+### API Endpoints
 
-And `npm test` should work at this point
+https://obscure-wave-29989.herokuapp.com/api/language
+GET request handler for dashboard page, homepage for logged in users
 
-## Configuring Postgres
+/head
+GET request handler for rendering each learning page 
 
-For tests involving time to run properly, configure your Postgres database to run in the UTC timezone.
+/guess
+POST request handler for user guessing
 
-1. Locate the `postgresql.conf` file for your Postgres installation.
-   1. E.g. for an OS X, Homebrew install: `/usr/local/var/postgres/postgresql.conf`
-   2. E.g. on Windows, _maybe_: `C:\Program Files\PostgreSQL\11.2\data\postgresql.conf`
-2. Find the `timezone` line and set it to `UTC`:
 
-```conf
-# - Locale and Formatting -
+https://obscure-wave-29989.herokuapp.com/api/auth/token
+POST request for user login to receive a JWT
 
-datestyle = 'iso, mdy'
-#intervalstyle = 'postgres'
-timezone = 'UTC'
-#timezone_abbreviations = 'Default'     # Select the set of available time zone
-```
 
-## Scripts
-
-Start the application `npm start`
-
-Start nodemon for the application `npm run dev`
-
-Run the tests mode `npm test`
-
-Run the migrations up `npm run migrate`
-
-Run the migrations down `npm run migrate -- 0`
+https://obscure-wave-29989.herokuapp.com/api/user
+POST request for user registration
