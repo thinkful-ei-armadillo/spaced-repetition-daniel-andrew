@@ -28,13 +28,13 @@ Essentially, this concept requires each item in an item list to be shifted ahead
 
 GET request handler for dashboard page, homepage for logged in users: `/language`
 
-GET request handler for rendering each learning page `/head`
+GET request handler for rendering each learning page: `/head`
 
-POST request handler for user guessing `/guess`
+POST request handler for user guessing: `/guess`
 
-POST request for user login to receive a JWT `/auth/token`
+POST request for user login to receive a JWT: `/auth/token`
 
-POST request for user registration `/user`
+POST request for user registration: `/user`
 
 
 ## Client-Side Repository
