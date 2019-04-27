@@ -13,8 +13,6 @@
     "migrate-production": "postgrator --config postgrator-production-config.js"
   },
   "keywords": [],
-  "author": "Tom `tomatao` HT <tomht@thinkful.com>",
-  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

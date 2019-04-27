@@ -66,7 +66,8 @@ languageRouter.get("/head", async (req, res, next) => {
 // POST request handler for user guessing
 languageRouter.post("/guess", bodyParser, async (req, res, next) => {
   const { guess } = req.body;
-  const newGuess = guess;
+  // normalizing text input to lowercase here
+  const newGuess = guess.toLowerCase();
 
   try {
     if (!req.body.guess) {

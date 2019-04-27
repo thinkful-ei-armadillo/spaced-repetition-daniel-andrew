@@ -53,7 +53,7 @@ const LanguageService = {
       return db('word')
         .update(wordObj)
         .where('id', item.id);
-    } )  
+    });  
   },
   // update appropriate fields in language table once user responds with an answer, pointing to the new head
   postUserLanguage(db, id, langObj) {
@@ -76,14 +76,14 @@ const LanguageService = {
   },
   generateLinkedListTwo(words, head, total_score){
     const ll = new NewLinkedList(words[0].language_id, 'JavaScript', total_score);
-    let word = words.find(item => item.id === head)
+    let word = words.find(item => item.id === head);
     ll.insertHead(word);
 
     while(word.next){
-      word = words.find(item => item.id === word.next)
-      ll.insertTail(word)
+      word = words.find(item => item.id === word.next);
+      ll.insertTail(word);
     }
-    return ll
+    return ll;
   },
 };
 
