@@ -1,5 +1,5 @@
 {
-  "name": "express-boilerplate",
+  "name": "learnjs-server",
   "version": "0.0.1",
   "description": "",
   "main": "src/server.js",
